@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+<title>SATCOM Requirements Agent Harness — AURORA-SATCOM</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: #0a0e1a;
+    color: #e8ecf4;
+  }
+
+  .deck {
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    position: relative;
+  }
+  .track {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    transition: transform 600ms cubic-bezier(0.83, 0, 0.17, 1);
+  }
+  .slide {
+    flex: 0 0 100vw;
+    height: 100vh;
+    padding: clamp(28px, 5vw, 80px) clamp(28px, 6vw, 110px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: linear-gradient(135deg, #0a0e1a 0%, #0f1626 50%, #131c33 100%);
+    position: relative;
+  }
+
+  /* Decorative orbit / satellite vibes */
+  .slide::before {
+    content: "";
+    position: absolute;
+    top: -150px;
+    right: -150px;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(80,180,255,0.18) 0%, rgba(80,180,255,0) 70%);
+    pointer-events: none;
+  }
+  .slide::after {
+    content: "";
+    position: absolute;
+    bottom: -200px;
+    left: -200px;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(120,90,255,0.15) 0%, rgba(120,90,255,0) 70%);
+    pointer-events: none;
+  }
+
+  h1 {
+    font-size: clamp(2.4rem, 5.5vw, 4.6rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.4em;
+    background: linear-gradient(135deg, #fff 0%, #7ec5ff 60%, #b794ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  h2 {
+    font-size: clamp(1.8rem, 3.6vw, 3rem);
+    font-weight: 700;
+    margin-bottom: 0.6em;
+    letter-spacing: -0.015em;
+    color: #ffffff;
+  }
+  h3 {
+    font-size: clamp(1.1rem, 1.8vw, 1.5rem);
+    font-weight: 600;
+    margin-bottom: 0.5em;
+    color: #7ec5ff;
+  }
+  p {
+    font-size: clamp(1rem, 1.3vw, 1.2rem);
+    line-height: 1.6;
+    color: #c8d2e3;
+    max-width: 1100px;
+    margin-bottom: 0.8em;
+  }
+  .lead {
+    font-size: clamp(1.15rem, 1.5vw, 1.4rem);
+    color: #a8b6cc;
+  }
+  ul, ol {
+    list-style: none;
+    margin-bottom: 1em;
+  }
+  ul li, ol li {
+    font-size: clamp(0.95rem, 1.2vw, 1.15rem);
+    line-height: 1.6;
+    margin-bottom: 0.6em;
+    color: #c8d2e3;
+    padding-left: 1.4em;
+    position: relative;
+  }
+  ul li::before {
+    content: "▸";
+    color: #7ec5ff;
+    position: absolute;
+    left: 0;
+    font-weight: 700;
+  }
+  ol { counter-reset: step; }
+  ol li {
+    counter-increment: step;
+  }
+  ol li::before {
+    content: counter(step);
+    color: #0a0e1a;
+    background: #7ec5ff;
+    width: 1.6em;
+    height: 1.6em;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85em;
+    position: absolute;
+    left: -0.4em;
+    top: 0.1em;
+  }
+  ol li { padding-left: 2em; }
+
+  code {
+    font-family: 'JetBrains Mono', 'Cascadia Code', monospace;
+    background: rgba(126, 197, 255, 0.13);
+    border: 1px solid rgba(126, 197, 255, 0.25);
+    color: #b6e1ff;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 0.92em;
+  }
+  pre {
+    font-family: 'JetBrains Mono', monospace;
+    background: rgba(8, 12, 24, 0.85);
+    border: 1px solid rgba(126, 197, 255, 0.25);
+    border-radius: 10px;
+    padding: clamp(14px, 1.6vw, 22px);
+    color: #b6e1ff;
+    font-size: clamp(0.78rem, 1vw, 0.95rem);
+    line-height: 1.55;
+    overflow-x: auto;
+    max-width: 1200px;
+    margin: 0.8em 0;
+    white-space: pre;
+  }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(16px, 2vw, 32px);
+    margin-top: 1em;
+  }
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(14px, 1.6vw, 24px);
+    margin-top: 1em;
+  }
+  .grid-5 {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: clamp(10px, 1.2vw, 18px);
+    margin-top: 1.2em;
+  }
+  @media (max-width: 900px) {
+    .grid-2, .grid-3, .grid-5 { grid-template-columns: 1fr; }
+  }
+
+  .card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(126, 197, 255, 0.18);
+    border-radius: 14px;
+    padding: clamp(16px, 1.6vw, 26px);
+    backdrop-filter: blur(6px);
+    transition: transform 200ms ease, border-color 200ms ease;
+  }
+  .card:hover { transform: translateY(-3px); border-color: rgba(126, 197, 255, 0.45); }
+  .card h3 {
+    font-size: clamp(1rem, 1.3vw, 1.2rem);
+    margin-bottom: 0.4em;
+  }
+  .card p, .card li {
+    font-size: clamp(0.85rem, 1.05vw, 1rem);
+    margin-bottom: 0.4em;
+    line-height: 1.5;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.78em;
+    font-weight: 600;
+    background: rgba(126, 197, 255, 0.15);
+    border: 1px solid rgba(126, 197, 255, 0.4);
+    color: #7ec5ff;
+    margin-right: 6px;
+    margin-bottom: 6px;
+  }
+  .badge.green { background: rgba(78, 220, 130, 0.13); border-color: rgba(78, 220, 130, 0.45); color: #6fe6a3; }
+  .badge.purple { background: rgba(170, 130, 255, 0.15); border-color: rgba(170, 130, 255, 0.45); color: #c5a8ff; }
+  .badge.amber { background: rgba(255, 188, 88, 0.13); border-color: rgba(255, 188, 88, 0.45); color: #ffd07a; }
+
+  .stage-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(126, 197, 255, 0.2);
+    border-radius: 12px;
+    padding: 14px 12px;
+    text-align: center;
+    position: relative;
+  }
+  .stage-card .num {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #7ec5ff;
+    margin-bottom: 6px;
+    letter-spacing: 0.1em;
+  }
+  .stage-card .name {
+    font-size: clamp(0.95rem, 1.1vw, 1.1rem);
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+  .stage-card .desc {
+    font-size: clamp(0.75rem, 0.9vw, 0.9rem);
+    color: #a8b6cc;
+    line-height: 1.4;
+  }
+
+  .arrow {
+    align-self: center;
+    color: #7ec5ff;
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  /* Navigation */
+  .nav {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: rgba(126, 197, 255, 0.12);
+    border: 1px solid rgba(126, 197, 255, 0.4);
+    color: #fff;
+    font-size: 1.6rem;
+    cursor: pointer;
+    z-index: 100;
+    transition: all 200ms ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(8px);
+  }
+  .nav:hover { background: rgba(126, 197, 255, 0.3); transform: translateY(-50%) scale(1.08); }
+  .nav.prev { left: 24px; }
+  .nav.next { right: 24px; }
+  .nav.hidden { opacity: 0; pointer-events: none; }
+
+  .progress {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    width: 100%;
+    background: rgba(255,255,255,0.05);
+    z-index: 50;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #7ec5ff 0%, #b794ff 100%);
+    transition: width 600ms cubic-bezier(0.83, 0, 0.17, 1);
+  }
+
+  .counter {
+    position: fixed;
+    bottom: 16px;
+    right: 22px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.55);
+    z-index: 50;
+  }
+
+  .esl-footer {
+    position: fixed;
+    bottom: 18px;
+    left: 26px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    z-index: 50;
+    font-size: 1rem;
+    color: rgba(255,255,255,0.75);
+    letter-spacing: 0.02em;
+    background: rgba(8, 12, 24, 0.6);
+    border: 1px solid rgba(126, 197, 255, 0.22);
+    border-radius: 14px;
+    padding: 10px 22px 10px 14px;
+    backdrop-filter: blur(8px);
+  }
+  .esl-footer img {
+    height: 72px;
+    width: auto;
+    display: block;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+  }
+  .esl-footer a {
+    color: #7ec5ff;
+    text-decoration: none;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(126, 197, 255, 0.4);
+    transition: color 200ms ease, border-color 200ms ease;
+  }
+  .esl-footer a:hover {
+    color: #b794ff;
+    border-bottom-color: rgba(183, 148, 255, 0.7);
+  }
+  @media (max-width: 720px) {
+    .esl-footer { font-size: 0.85rem; padding: 6px 14px 6px 8px; gap: 10px; }
+    .esl-footer img { height: 48px; }
+  }
+
+  .swipe-hint {
+    position: fixed;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.5);
+    animation: pulse 2s ease-in-out infinite;
+    z-index: 40;
+  }
+  @keyframes pulse { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+  .swipe-hint.gone { display: none; }
+
+  .footer-tag {
+    position: absolute;
+    top: 30px;
+    left: clamp(28px, 6vw, 110px);
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .score-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .score-bar {
+    height: 8px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .score-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #6fe6a3 0%, #7ec5ff 100%);
+    border-radius: 4px;
+  }
+  .score-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: #c8d2e3;
+  }
+  .score-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    color: #6fe6a3;
+  }
+
+  .big-number {
+    font-size: clamp(4rem, 9vw, 8rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, #6fe6a3 0%, #7ec5ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    margin: 0.1em 0;
+  }
+</style>
+</head>
+<body>
+<div class="deck">
+  <div class="track" id="track">
+
+    <!-- Slide 1: Title -->
+    <section class="slide">
+      <div class="footer-tag">Project AURORA-SATCOM • Demo</div>
+      <h1>SATCOM Requirements<br/>Transformation Agent</h1>
+      <p class="lead" style="margin-top:0.6em;">A 5-stage, air-gapped pipeline that turns raw customer requirements into engineered specs, features, and dev-ready backlog items — with full traceability and conflict detection.</p>
+      <div style="margin-top:1.6em;">
+        <span class="badge green">Final Score: 100 / 100</span>
+        <span class="badge">Mock Mode</span>
+        <span class="badge purple">Deterministic</span>
+        <span class="badge amber">Air-Gapped</span>
+      </div>
+    </section>
+
+    <!-- Slide 2: The Problem -->
+    <section class="slide">
+      <div class="footer-tag">01 • The Problem</div>
+      <h2>From customer wishlists to engineering reality</h2>
+      <p class="lead">Three customers. Conflicting demands. Hundreds of pages of requirements docs.</p>
+      <div class="grid-3" style="margin-top:1.6em;">
+        <div class="card">
+          <h3>Customer A — Defense</h3>
+          <p>Encryption, signed updates, 7-year audit logs, role-based access.</p>
+        </div>
+        <div class="card">
+          <h3>Customer B — Commercial Telecom</h3>
+          <p>Bandwidth tiers, billing accuracy, SLA reporting, 24-month usage retention.</p>
+        </div>
+        <div class="card">
+          <h3>Customer C — Emergency Response</h3>
+          <p>Rapid deploy, simplified dashboards, priority traffic for first responders.</p>
+        </div>
+      </div>
+      <p style="margin-top:1.4em;">Manually merging these into a unified system specification takes weeks and is error-prone. The harness does it deterministically in under a second.</p>
+    </section>
+
+    <!-- Slide 3: Architecture overview -->
+    <section class="slide">
+      <div class="footer-tag">02 • Architecture</div>
+      <h2>The 5-stage pipeline</h2>
+      <div class="grid-5">
+        <div class="stage-card">
+          <div class="num">STAGE 1</div>
+          <div class="name">Ingestion</div>
+          <div class="desc">Regex extracts customer reqs from .md files. Deterministic.</div>
+        </div>
+        <div class="stage-card">
+          <div class="num">STAGE 2</div>
+          <div class="name">SRD</div>
+          <div class="desc">Engineering "shall" requirements with subsystem assignment.</div>
+        </div>
+        <div class="stage-card">
+          <div class="num">STAGE 3</div>
+          <div class="name">SSS</div>
+          <div class="desc">Unified system spec — dedup + conflict detection.</div>
+        </div>
+        <div class="stage-card">
+          <div class="num">STAGE 4</div>
+          <div class="name">Features</div>
+          <div class="desc">Capability groupings for product planning.</div>
+        </div>
+        <div class="stage-card">
+          <div class="num">STAGE 5</div>
+          <div class="name">PBIs</div>
+          <div class="desc">Backlog items with Given / When / Then ACs.</div>
+        </div>
+      </div>
+      <p style="margin-top:1.6em;">Every stage output is JSON-schema validated. Every requirement traces back to its customer ID. Nothing is silently dropped.</p>
+    </section>
+
+    <!-- Slide 4: Project structure -->
+    <section class="slide">
+      <div class="footer-tag">03 • Project Layout</div>
+      <h2>What's in the box</h2>
+      <pre>satcom_requirements_agent_harness/
+├── config.json              ← run mode + LLM config + approved-model policy
+├── requirements.txt         ← jsonschema only (offline-friendly)
+├── input/
+│   ├── customer_requirements/   ← Customer A / B / C .md files
+│   └── context/                  ← System context (subsystem catalog)
+├── prompts/                  ← Stage 2-5 prompt templates (.md)
+├── src/
+│   ├── main.py              ← CLI runner (entry point)
+│   ├── pipeline.py          ← 5-stage orchestrator
+│   ├── llm_client.py        ← MockLLMClient + LocalLLMClient stub
+│   ├── schemas.py           ← JSON schemas (strict, do not simplify)
+│   ├── validators.py        ← Schema + traceability cross-checks
+│   ├── scoring.py           ← Weighted benchmark scoring
+│   └── utils.py             ← I/O + ingestion regex
+├── tests/                    ← validator unit tests
+└── outputs/                  ← generated stage artifacts (after run)</pre>
+    </section>
+
+    <!-- Slide 5: Step 1 — Setup -->
+    <section class="slide">
+      <div class="footer-tag">04 • Step-by-Step</div>
+      <h2>Step 1 — Create venv & install</h2>
+      <pre>cd C:\Amp_demos\ELIRAN_AI\satcom_requirements_agent_harness
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt</pre>
+      <p><strong>What this does:</strong></p>
+      <ul>
+        <li>Creates an isolated Python environment in <code>.venv/</code> so the harness doesn't pollute your global Python.</li>
+        <li>Installs the only runtime dependency: <code>jsonschema</code>, used by the validator to enforce strict per-stage schemas.</li>
+        <li>No network calls beyond pip's package fetch — safe for air-gapped operation once the wheel is cached.</li>
+      </ul>
+    </section>
+
+    <!-- Slide 6: Step 2 — Run -->
+    <section class="slide">
+      <div class="footer-tag">04 • Step-by-Step</div>
+      <h2>Step 2 — Run the pipeline</h2>
+      <pre>.\.venv\Scripts\python.exe src\main.py --config config.json</pre>
+      <p><strong>The runner is</strong> <code>src/main.py</code>. Internally:</p>
+      <ol>
+        <li>Loads <code>config.json</code>.</li>
+        <li>Picks <code>MockLLMClient</code> when <code>mode: mock</code>, or <code>LocalLLMClient</code> for production.</li>
+        <li>Calls <code>run_pipeline(config, llm)</code> in <code>src/pipeline.py</code>.</li>
+        <li>Writes 8 JSON files to <code>outputs/</code>.</li>
+        <li>Prints <code>score_report.json</code> to stdout. Exits 0 on pass, 1 on fail.</li>
+      </ol>
+    </section>
+
+    <!-- Slide 7: Stage 1 explained -->
+    <section class="slide">
+      <div class="footer-tag">Stage 1</div>
+      <h2>Ingestion — deterministic by design</h2>
+      <div class="grid-2">
+        <div>
+          <h3>What it does</h3>
+          <p>Scans every <code>.md</code> file under <code>input/customer_requirements/</code> and extracts each requirement using the regex <code>^([A-Z]-REQ-\d{3})</code>.</p>
+          <h3>Why no LLM here?</h3>
+          <p>Source-of-truth extraction must be reproducible. An LLM might paraphrase, drop, or invent IDs. Regex never does.</p>
+        </div>
+        <div>
+          <h3>Output → <code>stage1_ingested_requirements.json</code></h3>
+          <pre>{
+  "id": "A-REQ-001",
+  "text": "The system shall provide
+           encrypted communication...",
+  "source_document":
+       "01_Customer_A_Defense_Requirements.md",
+  "keywords": [],
+  "domain": "satcom"
+}</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 8: Stage 2 explained -->
+    <section class="slide">
+      <div class="footer-tag">Stage 2</div>
+      <h2>SRD — engineering normalization</h2>
+      <div class="grid-2">
+        <div>
+          <h3>What it does</h3>
+          <p>For each customer requirement, produces a System Requirements Document entry: a single "the system shall…" statement, assigned to a subsystem, with a verification method.</p>
+          <h3>Subsystem inference</h3>
+          <p>Keyword-based router (<code>infer_subsystem</code>): "encrypt" → Security, "dashboard" → NMS, "bandwidth" → Ground Gateway, etc.</p>
+        </div>
+        <div>
+          <h3>Output → <code>stage2_srd.json</code></h3>
+          <pre>{
+  "srd_id": "SRD-SEC-001",
+  "text": "The system shall provide
+           encrypted communication...",
+  "source_ids": ["A-REQ-001"],
+  "subsystem": "Security and Cryptography",
+  "type": "functional",
+  "verification": "test",
+  "assumptions": [],
+  "uncertainty": false
+}</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 9: Stage 3 — the most important -->
+    <section class="slide">
+      <div class="footer-tag">Stage 3 • The hero stage</div>
+      <h2>SSS — unify, dedup, detect conflicts</h2>
+      <div class="grid-2">
+        <div>
+          <h3>Three jobs at once</h3>
+          <ul>
+            <li><strong>Merge</strong> related SRDs from different customers into a single system-level requirement.</li>
+            <li><strong>Detect conflicts</strong> when customers disagree (e.g. retention periods).</li>
+            <li><strong>Maintain full traceability</strong>: <code>source_srd_ids</code> AND <code>source_customer_ids</code> are mandatory.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Conflict caught in this run</h3>
+          <pre>SSS-DATA-001
+  "Retention periods differ by record class:
+   operational logs require 7 years;
+   billing usage records require 24 months."
+
+  source_srd_ids:      [SRD-DATA-001, SRD-DATA-002]
+  source_customer_ids: [A-REQ-013, B-REQ-009]</pre>
+          <p style="font-size:0.95rem;">A real conflict between Defense (A) and Commercial (B) — surfaced automatically.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 10: Stage 4 + 5 -->
+    <section class="slide">
+      <div class="footer-tag">Stages 4 & 5</div>
+      <h2>From spec to backlog</h2>
+      <div class="grid-2">
+        <div>
+          <h3>Stage 4 — Features</h3>
+          <p>Groups SSS items by subsystem prefix into PM-level capabilities:</p>
+          <ul>
+            <li>FEAT-SEC-01 Secure Communications &amp; Key Management</li>
+            <li>FEAT-QOS-02 Mission-Based Traffic Prioritization</li>
+            <li>FEAT-NMS-04 Operational Monitoring &amp; Dashboards</li>
+            <li>FEAT-DATA-03 Reporting, Audit &amp; Retention</li>
+            <li>FEAT-UPD-06 Software Update Campaign Mgmt</li>
+            <li>FEAT-UTS-05 Terminal Deployment &amp; Local Operation</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Stage 5 — PBIs (Given / When / Then)</h3>
+          <pre>{
+  "pbi_id": "PBI-SEC-01-01",
+  "feature_id": "FEAT-SEC-01",
+  "title": "Define data model and workflow...",
+  "acceptance_criteria": [
+    "Given a valid system configuration
+     When the user executes the workflow
+     Then the system stores the result with
+     validation status and linked SSS ids"
+  ],
+  "linked_sss_ids": ["SSS-SEC-001"]
+}</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 11: Validation -->
+    <section class="slide">
+      <div class="footer-tag">05 • Validation</div>
+      <h2>Validation — what gets checked</h2>
+      <div class="grid-2">
+        <div>
+          <h3>Schema enforcement</h3>
+          <ul>
+            <li>Every artifact passes <code>jsonschema.validate()</code> against <code>schemas.py</code>.</li>
+            <li>Required fields, array minItems, types — strict.</li>
+            <li><code>additionalProperties: true</code> only — never drop data, but never miss required fields.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Cross-reference checks</h3>
+          <ul>
+            <li>Every <code>source_ids</code> resolves to a real customer ID.</li>
+            <li>Every SSS has <strong>both</strong> <code>source_srd_ids</code> AND <code>source_customer_ids</code>.</li>
+            <li>Every Feature's <code>linked_sss_ids</code> resolve to real SSS items.</li>
+            <li>Every PBI's <code>feature_id</code> + <code>linked_sss_ids</code> resolve.</li>
+            <li>Every PBI acceptance criterion contains <strong>Given</strong>, <strong>When</strong>, <strong>Then</strong>.</li>
+            <li>Duplicate-text SSS items raise warnings.</li>
+          </ul>
+        </div>
+      </div>
+      <p style="margin-top:1em;"><strong>Result for this run:</strong> 0 errors, 0 warnings — see <code>validation_report.json</code>.</p>
+    </section>
+
+    <!-- Slide 12: Scoring -->
+    <section class="slide">
+      <div class="footer-tag">06 • Scoring</div>
+      <h2>Benchmark scoring — weighted across 6 categories</h2>
+      <div class="grid-2">
+        <div>
+          <h3>Weights</h3>
+          <div class="score-row"><span class="score-label">Traceability accuracy</span><span class="score-value">25%</span></div>
+          <div class="score-row"><span class="score-label">Deduplication quality</span><span class="score-value">20%</span></div>
+          <div class="score-row"><span class="score-label">Conflict detection</span><span class="score-value">15%</span></div>
+          <div class="score-row"><span class="score-label">Feature quality</span><span class="score-value">15%</span></div>
+          <div class="score-row"><span class="score-label">PBI quality</span><span class="score-value">15%</span></div>
+          <div class="score-row"><span class="score-label">JSON validity</span><span class="score-value">10%</span></div>
+        </div>
+        <div>
+          <h3>Pass condition</h3>
+          <p><code>validation_report.passed = true</code> AND <code>final_score ≥ 80</code>.</p>
+          <h3>Why these weights?</h3>
+          <p>Traceability is heaviest because regulators and customer auditors care most about it. Conflict detection is weighted high because missing one means a defect ships to integration. JSON validity is the floor — without it, no downstream tool works.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 13: Results -->
+    <section class="slide">
+      <div class="footer-tag">07 • Live Results</div>
+      <h2>This run's score</h2>
+      <div class="grid-2">
+        <div>
+          <div class="big-number">100<span style="font-size:0.4em; color:#c8d2e3;">/100</span></div>
+          <p class="lead" style="color:#6fe6a3;"><strong>PASSED</strong> · 0 errors · 0 warnings · all schemas valid</p>
+          <h3 style="margin-top:1em;">Counts</h3>
+          <ul>
+            <li>14 customer requirements ingested</li>
+            <li>14 SRD items generated</li>
+            <li>9 unified SSS items (5 merged from multiple sources)</li>
+            <li>6 features</li>
+            <li>12 PBIs with Given/When/Then acceptance criteria</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Per-category</h3>
+          <div class="score-row"><span class="score-label">Traceability accuracy</span><span class="score-value">100</span></div>
+          <div class="score-bar"><div class="score-bar-fill" style="width:100%;"></div></div>
+          <div class="score-row" style="margin-top:0.6em;"><span class="score-label">Deduplication quality</span><span class="score-value">100</span></div>
+          <div class="score-bar"><div class="score-bar-fill" style="width:100%;"></div></div>
+          <div class="score-row" style="margin-top:0.6em;"><span class="score-label">Conflict detection</span><span class="score-value">100</span></div>
+          <div class="score-bar"><div class="score-bar-fill" style="width:100%;"></div></div>
+          <div class="score-row" style="margin-top:0.6em;"><span class="score-label">Feature quality</span><span class="score-value">100</span></div>
+          <div class="score-bar"><div class="score-bar-fill" style="width:100%;"></div></div>
+          <div class="score-row" style="margin-top:0.6em;"><span class="score-label">PBI quality</span><span class="score-value">100</span></div>
+          <div class="score-bar"><div class="score-bar-fill" style="width:100%;"></div></div>
+          <div class="score-row" style="margin-top:0.6em;"><span class="score-label">JSON validity</span><span class="score-value">100</span></div>
+          <div class="score-bar"><div class="score-bar-fill" style="width:100%;"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 14: Compliance & guardrails -->
+    <section class="slide">
+      <div class="footer-tag">08 • Compliance</div>
+      <h2>Air-gapped, deterministic, auditable</h2>
+      <div class="grid-3">
+        <div class="card">
+          <h3>No internet</h3>
+          <p>The harness makes zero outbound connections. The only network operation is pip install — safe behind a corporate proxy or fully cached for air-gapped sites.</p>
+        </div>
+        <div class="card">
+          <h3>Deterministic</h3>
+          <p>Mock mode produces byte-identical output every run, so CI can diff <code>outputs/</code> against a golden reference.</p>
+        </div>
+        <div class="card">
+          <h3>Approved-model policy</h3>
+          <p><code>config.json</code> declares disallowed model origins (China) and families (Qwen, DeepSeek, GLM, Yi, Moonshot, Kimi, …) for the production LLM swap-in.</p>
+        </div>
+      </div>
+      <p style="margin-top:1.4em;"><strong>Strict spec constraints honored:</strong> no architecture changes, no removed validation, no simplified schemas, no pipeline replacement.</p>
+    </section>
+
+    <!-- Slide 15: Production swap -->
+    <section class="slide">
+      <div class="footer-tag">09 • Production Path</div>
+      <h2>Swapping in a real local LLM</h2>
+      <ol>
+        <li>Set <code>"mode": "local"</code> in <code>config.json</code>.</li>
+        <li>Implement <code>LocalLLMClient.generate_json()</code> in <code>src/llm_client.py</code> — POST prompt + payload to your on-prem endpoint, parse JSON, return.</li>
+        <li>Point <code>llm.endpoint</code> at your inference service: NVIDIA NIM, vLLM OpenAI-compatible, TensorRT-LLM, or a local Llama / Mistral wrapper.</li>
+        <li>Keep <strong>schemas.py, validators.py, scoring.py, pipeline.py</strong> untouched.</li>
+        <li>Re-run the same command. The runner picks up the new client automatically.</li>
+      </ol>
+      <p>Because validation is downstream of generation, a misbehaving model is caught before scoring. Bad output → low score → CI gate fails.</p>
+    </section>
+
+    <!-- Slide 16: Demo script -->
+    <section class="slide">
+      <div class="footer-tag">10 • Demo Script</div>
+      <h2>How to demo it in 4 minutes</h2>
+      <ol>
+        <li>Open <code>config.json</code> — point out <code>mode: mock</code> and the approved-model policy.</li>
+        <li>Run the command live. Score JSON appears in the terminal.</li>
+        <li>Open <code>outputs/</code>. Walk left-to-right: customer reqs → SRD → SSS → Features → PBIs.</li>
+        <li>Open <code>stage3_sss.json</code>. Highlight <code>source_srd_ids</code> + <code>source_customer_ids</code> on every entry. Then show <code>SSS-DATA-001</code>'s <code>conflict_notes</code>.</li>
+        <li>Open <code>stage5_pbis.json</code>. Show Given / When / Then in every acceptance criterion.</li>
+        <li>Open <code>score_report.json</code>. <strong>100 / 100, passed.</strong></li>
+        <li>Close with: "Same code, swap mock for local LLM in config — air-gapped production-ready."</li>
+      </ol>
+    </section>
+
+    <!-- Slide 17: Closing -->
+    <section class="slide">
+      <div class="footer-tag">Thank you</div>
+      <h1>Requirements that<br/>actually compile.</h1>
+      <p class="lead" style="margin-top:0.8em;">14 customer requirements → 9 unified SSS → 6 features → 12 dev-ready PBIs.<br/>0 errors, 0 warnings, 1 conflict surfaced. Score: 100 / 100.</p>
+      <div style="margin-top:1.6em;">
+        <span class="badge green">Air-Gapped</span>
+        <span class="badge">Deterministic</span>
+        <span class="badge purple">Schema-Validated</span>
+        <span class="badge amber">Traceable end-to-end</span>
+      </div>
+      <p style="margin-top:2em; font-size:0.9rem; color:rgba(255,255,255,0.5);">Project AURORA-SATCOM • SATCOM Requirements Transformation Agent Harness</p>
+    </section>
+
+  </div>
+
+  <button class="nav prev" id="prev" aria-label="Previous slide">‹</button>
+  <button class="nav next" id="next" aria-label="Next slide">›</button>
+  <div class="progress"><div class="progress-fill" id="progress"></div></div>
+  <div class="counter" id="counter">1 / 17</div>
+  <div class="swipe-hint" id="hint">← Swipe to navigate →</div>
+  <div class="esl-footer">
+    <img src="esl_logo.png" alt="ESL — Engineering Software Lab" />
+    <span>Prepared by <a href="https://eswlab.com/contact-us/" target="_blank" rel="noopener noreferrer">Engineering Software Lab</a></span>
+  </div>
+</div>
+
+<script>
+(function(){
+  const track = document.getElementById('track');
+  const prev = document.getElementById('prev');
+  const next = document.getElementById('next');
+  const progress = document.getElementById('progress');
+  const counter = document.getElementById('counter');
+  const hint = document.getElementById('hint');
+  const total = document.querySelectorAll('.slide').length;
+  let idx = 0;
+
+  function update() {
+    track.style.transform = `translateX(-${idx * 100}vw)`;
+    progress.style.width = `${((idx + 1) / total) * 100}%`;
+    counter.textContent = `${idx + 1} / ${total}`;
+    prev.classList.toggle('hidden', idx === 0);
+    next.classList.toggle('hidden', idx === total - 1);
+  }
+  function go(n){
+    idx = Math.max(0, Math.min(total - 1, n));
+    update();
+    if(hint && !hint.classList.contains('gone')) hint.classList.add('gone');
+  }
+
+  prev.addEventListener('click', () => go(idx - 1));
+  next.addEventListener('click', () => go(idx + 1));
+
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'ArrowRight' || e.key === ' '){ e.preventDefault(); go(idx + 1); }
+    else if(e.key === 'ArrowLeft'){ e.preventDefault(); go(idx - 1); }
+    else if(e.key === 'Home'){ go(0); }
+    else if(e.key === 'End'){ go(total - 1); }
+  });
+
+  // Touch swipe
+  let tStartX = 0, tEndX = 0;
+  document.addEventListener('touchstart', (e) => { tStartX = e.changedTouches[0].screenX; }, {passive:true});
+  document.addEventListener('touchend', (e) => {
+    tEndX = e.changedTouches[0].screenX;
+    const d = tEndX - tStartX;
+    if(Math.abs(d) > 50){ d < 0 ? go(idx + 1) : go(idx - 1); }
+  }, {passive:true});
+
+  // Mouse drag
+  let mDown = false, mStart = 0;
+  document.addEventListener('mousedown', (e) => { mDown = true; mStart = e.screenX; });
+  document.addEventListener('mouseup', (e) => {
+    if(!mDown) return;
+    mDown = false;
+    const d = e.screenX - mStart;
+    if(Math.abs(d) > 50){ d < 0 ? go(idx + 1) : go(idx - 1); }
+  });
+
+  update();
+})();
+</script>
+</body>
+</html>

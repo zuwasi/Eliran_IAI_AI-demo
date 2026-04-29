@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+<title>How to Run the Demo — AURORA-SATCOM Requirements Agent</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: #0a0e1a;
+    color: #e8ecf4;
+  }
+
+  .deck { height: 100vh; width: 100vw; overflow: hidden; position: relative; }
+  .track {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    transition: transform 600ms cubic-bezier(0.83, 0, 0.17, 1);
+  }
+  .slide {
+    flex: 0 0 100vw;
+    height: 100vh;
+    padding: clamp(28px, 5vw, 80px) clamp(28px, 6vw, 110px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: linear-gradient(135deg, #0a0e1a 0%, #0f1626 50%, #131c33 100%);
+    position: relative;
+  }
+  .slide::before {
+    content: "";
+    position: absolute;
+    top: -150px; right: -150px;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(80,180,255,0.18) 0%, rgba(80,180,255,0) 70%);
+    pointer-events: none;
+  }
+  .slide::after {
+    content: "";
+    position: absolute;
+    bottom: -200px; left: -200px;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(120,90,255,0.15) 0%, rgba(120,90,255,0) 70%);
+    pointer-events: none;
+  }
+
+  h1 {
+    font-size: clamp(2.4rem, 5.5vw, 4.6rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.4em;
+    background: linear-gradient(135deg, #fff 0%, #7ec5ff 60%, #b794ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  h2 {
+    font-size: clamp(1.8rem, 3.6vw, 3rem);
+    font-weight: 700;
+    margin-bottom: 0.6em;
+    letter-spacing: -0.015em;
+    color: #ffffff;
+  }
+  h3 {
+    font-size: clamp(1.1rem, 1.8vw, 1.5rem);
+    font-weight: 600;
+    margin-bottom: 0.5em;
+    color: #7ec5ff;
+  }
+  p {
+    font-size: clamp(1rem, 1.3vw, 1.2rem);
+    line-height: 1.6;
+    color: #c8d2e3;
+    max-width: 1100px;
+    margin-bottom: 0.8em;
+  }
+  .lead {
+    font-size: clamp(1.15rem, 1.5vw, 1.4rem);
+    color: #a8b6cc;
+  }
+  ul, ol { list-style: none; margin-bottom: 1em; }
+  ul li, ol li {
+    font-size: clamp(0.95rem, 1.2vw, 1.15rem);
+    line-height: 1.6;
+    margin-bottom: 0.6em;
+    color: #c8d2e3;
+    padding-left: 1.4em;
+    position: relative;
+  }
+  ul li::before {
+    content: "▸";
+    color: #7ec5ff;
+    position: absolute;
+    left: 0;
+    font-weight: 700;
+  }
+  ol { counter-reset: step; }
+  ol li { counter-increment: step; padding-left: 2.2em; }
+  ol li::before {
+    content: counter(step);
+    color: #0a0e1a;
+    background: #7ec5ff;
+    width: 1.7em;
+    height: 1.7em;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85em;
+    position: absolute;
+    left: -0.2em;
+    top: 0.05em;
+  }
+
+  code {
+    font-family: 'JetBrains Mono', 'Cascadia Code', monospace;
+    background: rgba(126, 197, 255, 0.13);
+    border: 1px solid rgba(126, 197, 255, 0.25);
+    color: #b6e1ff;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 0.92em;
+  }
+  pre {
+    font-family: 'JetBrains Mono', monospace;
+    background: rgba(8, 12, 24, 0.85);
+    border: 1px solid rgba(126, 197, 255, 0.25);
+    border-radius: 10px;
+    padding: clamp(14px, 1.6vw, 22px);
+    color: #b6e1ff;
+    font-size: clamp(0.78rem, 1vw, 0.95rem);
+    line-height: 1.55;
+    overflow-x: auto;
+    max-width: 1200px;
+    margin: 0.8em 0;
+    white-space: pre;
+  }
+  pre .comment { color: #6f8aa8; }
+  pre .prompt  { color: #b794ff; font-weight: 600; }
+  pre .ok      { color: #6fe6a3; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(16px, 2vw, 32px); margin-top: 1em; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(14px, 1.6vw, 24px); margin-top: 1em; }
+  @media (max-width: 900px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  }
+
+  .card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(126, 197, 255, 0.18);
+    border-radius: 14px;
+    padding: clamp(16px, 1.6vw, 26px);
+    backdrop-filter: blur(6px);
+    transition: transform 200ms ease, border-color 200ms ease;
+  }
+  .card:hover { transform: translateY(-3px); border-color: rgba(126, 197, 255, 0.45); }
+  .card h3 { font-size: clamp(1rem, 1.3vw, 1.2rem); margin-bottom: 0.4em; }
+  .card p, .card li {
+    font-size: clamp(0.85rem, 1.05vw, 1rem);
+    margin-bottom: 0.4em;
+    line-height: 1.5;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.78em;
+    font-weight: 600;
+    background: rgba(126, 197, 255, 0.15);
+    border: 1px solid rgba(126, 197, 255, 0.4);
+    color: #7ec5ff;
+    margin-right: 6px;
+    margin-bottom: 6px;
+  }
+  .badge.green  { background: rgba(78,220,130,0.13); border-color: rgba(78,220,130,0.45); color: #6fe6a3; }
+  .badge.purple { background: rgba(170,130,255,0.15); border-color: rgba(170,130,255,0.45); color: #c5a8ff; }
+  .badge.amber  { background: rgba(255,188,88,0.13); border-color: rgba(255,188,88,0.45); color: #ffd07a; }
+
+  .step-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #7ec5ff 0%, #b794ff 100%);
+    color: #0a0e1a;
+    font-weight: 800;
+    font-size: 1.6rem;
+    margin-bottom: 1em;
+    box-shadow: 0 4px 18px rgba(126,197,255,0.3);
+  }
+
+  /* Navigation */
+  .nav {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: rgba(126, 197, 255, 0.12);
+    border: 1px solid rgba(126, 197, 255, 0.4);
+    color: #fff;
+    font-size: 1.6rem;
+    cursor: pointer;
+    z-index: 100;
+    transition: all 200ms ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(8px);
+  }
+  .nav:hover { background: rgba(126,197,255,0.3); transform: translateY(-50%) scale(1.08); }
+  .nav.prev { left: 24px; }
+  .nav.next { right: 24px; }
+  .nav.hidden { opacity: 0; pointer-events: none; }
+
+  .progress {
+    position: fixed;
+    bottom: 0; left: 0;
+    height: 4px; width: 100%;
+    background: rgba(255,255,255,0.05);
+    z-index: 50;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #7ec5ff 0%, #b794ff 100%);
+    transition: width 600ms cubic-bezier(0.83, 0, 0.17, 1);
+  }
+
+  .counter {
+    position: fixed;
+    bottom: 16px; right: 22px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.55);
+    z-index: 50;
+  }
+
+  .esl-footer {
+    position: fixed;
+    bottom: 18px;
+    left: 26px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    z-index: 50;
+    font-size: 1rem;
+    color: rgba(255,255,255,0.75);
+    letter-spacing: 0.02em;
+    background: rgba(8, 12, 24, 0.6);
+    border: 1px solid rgba(126, 197, 255, 0.22);
+    border-radius: 14px;
+    padding: 10px 22px 10px 14px;
+    backdrop-filter: blur(8px);
+  }
+  .esl-footer img {
+    height: 72px;
+    width: auto;
+    display: block;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+  }
+  .esl-footer a {
+    color: #7ec5ff;
+    text-decoration: none;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(126, 197, 255, 0.4);
+    transition: color 200ms ease, border-color 200ms ease;
+  }
+  .esl-footer a:hover {
+    color: #b794ff;
+    border-bottom-color: rgba(183,148,255,0.7);
+  }
+  @media (max-width: 720px) {
+    .esl-footer { font-size: 0.85rem; padding: 6px 14px 6px 8px; gap: 10px; }
+    .esl-footer img { height: 48px; }
+  }
+
+  .swipe-hint {
+    position: fixed;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.5);
+    animation: pulse 2s ease-in-out infinite;
+    z-index: 40;
+  }
+  @keyframes pulse { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+  .swipe-hint.gone { display: none; }
+
+  .footer-tag {
+    position: absolute;
+    top: 30px;
+    left: clamp(28px, 6vw, 110px);
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .platform-tabs {
+    display: inline-flex;
+    gap: 4px;
+    background: rgba(126,197,255,0.08);
+    border-radius: 8px;
+    padding: 4px;
+    margin-bottom: 0.6em;
+  }
+  .platform-tabs span {
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+  .platform-tabs span.active {
+    background: rgba(126,197,255,0.25);
+    color: #fff;
+  }
+</style>
+</head>
+<body>
+<div class="deck">
+  <div class="track" id="track">
+
+    <!-- Slide 1: Title -->
+    <section class="slide">
+      <div class="footer-tag">AURORA-SATCOM • Customer Demo</div>
+      <h1>How to Run<br/>the Demo</h1>
+      <p class="lead" style="margin-top:0.6em;">A 10-minute, hands-on guide to running the SATCOM Requirements Transformation Agent on your own machine — no internet, no external services, fully reproducible.</p>
+      <div style="margin-top:1.6em;">
+        <span class="badge">Windows · macOS · Linux</span>
+        <span class="badge green">Air-Gapped</span>
+        <span class="badge purple">Single dependency</span>
+        <span class="badge amber">~10 minutes</span>
+      </div>
+    </section>
+
+    <!-- Slide 2: What's in the box -->
+    <section class="slide">
+      <div class="footer-tag">Overview</div>
+      <h2>What's in the package</h2>
+      <pre>aurora_satcom_demo/
+├── README.md                                ← quick start
+├── STEP_BY_STEP_GUIDE.md                    ← detailed walkthrough
+├── how_to_run_the_demo.html                 ← this presentation
+├── satcom_requirements_presentation.html    ← technical overview deck
+└── satcom_requirements_agent_harness/       ← runnable Python project
+    ├── config.json
+    ├── requirements.txt
+    ├── input/      ← sample customer requirements + system context
+    ├── prompts/    ← per-stage prompt templates
+    ├── src/        ← pipeline, validators, scoring
+    └── tests/</pre>
+      <p>Two HTML decks (this one + the technical overview), the runnable harness, and two written guides. Nothing else needed.</p>
+    </section>
+
+    <!-- Slide 2.5: One-click installer -->
+    <section class="slide">
+      <div class="footer-tag">The fast path</div>
+      <h2>One-click install</h2>
+      <p class="lead">Don't want to type commands? Use the bundled installer.</p>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Windows</h3>
+          <p>Double-click <code>install.bat</code> in this folder.</p>
+          <p>It opens a console, verifies Python, creates a virtual environment, installs the dependency, and runs a smoke test. ~20 seconds.</p>
+          <p>To re-run the demo later: double-click <code>run_demo.bat</code>.</p>
+        </div>
+        <div class="card">
+          <h3>Linux / macOS</h3>
+<pre>chmod +x install.sh run_demo.sh
+./install.sh</pre>
+          <p>Same flow on POSIX systems. To re-run the demo later: <code>./run_demo.sh</code>.</p>
+        </div>
+      </div>
+      <p style="margin-top:1.2em; font-size:0.95rem; color:#a8b6cc;">No admin / sudo. No registry changes. Everything lives inside this folder. If you'd rather run the steps yourself, the manual walkthrough is on the next slides.</p>
+    </section>
+
+    <!-- Slide 3: Prerequisites -->
+    <section class="slide">
+      <div class="footer-tag">Before you start</div>
+      <h2>Prerequisites</h2>
+      <div class="grid-3">
+        <div class="card">
+          <h3>Python 3.10+</h3>
+          <p>Verify with <code>python --version</code> (Windows) or <code>python3 --version</code> (Linux/macOS).</p>
+          <p>If missing, install from <code>python.org</code> and ensure it's on your PATH.</p>
+        </div>
+        <div class="card">
+          <h3>A terminal</h3>
+          <p>Windows: <strong>PowerShell</strong> (built-in).</p>
+          <p>Linux / macOS: <strong>bash / zsh</strong> (built-in).</p>
+        </div>
+        <div class="card">
+          <h3>~ 5 MB free disk</h3>
+          <p>The harness is tiny — only one Python dependency (<code>jsonschema</code>).</p>
+          <p>Internet needed once for <code>pip install</code>; offline thereafter.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 4: Step 1 -->
+    <section class="slide">
+      <div class="footer-tag">Step 1 of 5</div>
+      <div class="step-number">1</div>
+      <h2>Open the project in a terminal</h2>
+      <p class="lead">Extract the package and change into the harness folder.</p>
+
+      <h3>Windows (PowerShell)</h3>
+<pre><span class="prompt">PS&gt;</span> cd path\to\aurora_satcom_demo\satcom_requirements_agent_harness</pre>
+
+      <h3>Linux / macOS</h3>
+<pre><span class="prompt">$</span> cd path/to/aurora_satcom_demo/satcom_requirements_agent_harness</pre>
+
+      <p>You should see <code>config.json</code>, <code>requirements.txt</code>, <code>input/</code>, <code>prompts/</code>, <code>src/</code>, <code>tests/</code>.</p>
+    </section>
+
+    <!-- Slide 5: Step 2 — venv -->
+    <section class="slide">
+      <div class="footer-tag">Step 2 of 5</div>
+      <div class="step-number">2</div>
+      <h2>Create a virtual environment</h2>
+      <p>Isolates this project's single dependency from your system Python — recommended best practice.</p>
+
+      <h3>Windows</h3>
+<pre><span class="prompt">PS&gt;</span> python -m venv .venv</pre>
+
+      <h3>Linux / macOS</h3>
+<pre><span class="prompt">$</span> python3 -m venv .venv
+<span class="prompt">$</span> source .venv/bin/activate</pre>
+
+      <p style="margin-top:1em; font-size:0.95rem; color:#a8b6cc;">A new folder <code>.venv/</code> is created. Nothing outside this folder is touched.</p>
+    </section>
+
+    <!-- Slide 6: Step 3 — install -->
+    <section class="slide">
+      <div class="footer-tag">Step 3 of 5</div>
+      <div class="step-number">3</div>
+      <h2>Install dependencies</h2>
+      <p>Only one library is needed: <code>jsonschema</code>, used to validate every stage output.</p>
+
+      <h3>Windows</h3>
+<pre><span class="prompt">PS&gt;</span> .\.venv\Scripts\python.exe -m pip install -r requirements.txt</pre>
+
+      <h3>Linux / macOS (with venv activated)</h3>
+<pre><span class="prompt">$</span> pip install -r requirements.txt</pre>
+
+      <p style="margin-top:1em; font-size:0.95rem; color:#a8b6cc;">This is the only step that touches the network. After this, the pipeline runs fully offline.</p>
+    </section>
+
+    <!-- Slide 7: Step 4 — run -->
+    <section class="slide">
+      <div class="footer-tag">Step 4 of 5</div>
+      <div class="step-number">4</div>
+      <h2>Run the pipeline</h2>
+      <p>One command. The runner is <code>src/main.py</code>.</p>
+
+      <h3>Windows</h3>
+<pre><span class="prompt">PS&gt;</span> .\.venv\Scripts\python.exe src\main.py --config config.json</pre>
+
+      <h3>Linux / macOS</h3>
+<pre><span class="prompt">$</span> python src/main.py --config config.json</pre>
+
+      <p>The pipeline runs all 5 stages, validates outputs, computes the score, and prints <code>score_report.json</code> to your terminal.</p>
+      <p style="margin-top:0.6em;"><strong>Total runtime:</strong> well under 1 second.</p>
+    </section>
+
+    <!-- Slide 8: Step 5 — verify -->
+    <section class="slide">
+      <div class="footer-tag">Step 5 of 5</div>
+      <div class="step-number">5</div>
+      <h2>Check the result</h2>
+      <p>You should see this in your terminal:</p>
+<pre>{
+  "category_scores": {
+    "traceability_accuracy": <span class="ok">100</span>,
+    "deduplication_quality": <span class="ok">100</span>,
+    "conflict_detection":    <span class="ok">100</span>,
+    "feature_quality":       <span class="ok">100</span>,
+    "pbi_quality":           <span class="ok">100</span>,
+    "json_validity":         <span class="ok">100</span>
+  },
+  "final_score": <span class="ok">100.0</span>,
+  "passed":      <span class="ok">true</span>
+}</pre>
+      <p>If you see <code>"passed": true</code> with a score ≥ 80 — you're done. ✅</p>
+    </section>
+
+    <!-- Slide 9: Outputs walkthrough -->
+    <section class="slide">
+      <div class="footer-tag">Outputs</div>
+      <h2>What was generated under <code>outputs/</code></h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Pipeline artifacts</h3>
+          <ul>
+            <li><code>stage1_ingested_requirements.json</code> — raw customer requirements</li>
+            <li><code>stage2_srd.json</code> — engineering "shall" requirements</li>
+            <li><code>stage3_sss.json</code> — unified system spec + conflict notes</li>
+            <li><code>stage4_features.json</code> — feature groupings</li>
+            <li><code>stage5_pbis.json</code> — backlog items with Given / When / Then ACs</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Reports</h3>
+          <ul>
+            <li><code>validation_report.json</code> — schema + traceability check results</li>
+            <li><code>score_report.json</code> — weighted benchmark across 6 categories</li>
+            <li><code>run_log.json</code> — per-stage counts &amp; timings</li>
+          </ul>
+        </div>
+      </div>
+      <p style="margin-top:1em;">Open any of these in a text editor or JSON viewer to inspect the pipeline's reasoning end-to-end.</p>
+    </section>
+
+    <!-- Slide 10: Where to look -->
+    <section class="slide">
+      <div class="footer-tag">Highlights</div>
+      <h2>What to look at first</h2>
+      <div class="grid-3">
+        <div class="card">
+          <h3>Traceability</h3>
+          <p>Open <code>stage3_sss.json</code> and look at any item — every entry has both <code>source_srd_ids</code> and <code>source_customer_ids</code>. Every system-level requirement traces back to its customer.</p>
+        </div>
+        <div class="card">
+          <h3>Conflict detection</h3>
+          <p>Find <code>SSS-DATA-001</code> — its <code>conflict_notes</code> capture a real disagreement: Customer A wants 7-year log retention, Customer B wants 24-month billing retention.</p>
+        </div>
+        <div class="card">
+          <h3>Dev-ready PBIs</h3>
+          <p>Open <code>stage5_pbis.json</code>. Every <code>acceptance_criteria</code> entry contains <strong>Given</strong> / <strong>When</strong> / <strong>Then</strong> — ready for sprint planning.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 11: Try modifications -->
+    <section class="slide">
+      <div class="footer-tag">Make it your own</div>
+      <h2>Try modifications</h2>
+      <p class="lead">Get a feel for how the pipeline reacts.</p>
+      <ol>
+        <li><strong>Edit a customer requirement</strong> in <code>input/customer_requirements/01_Customer_A_Defense_Requirements.md</code> — re-run, watch traceability propagate through all five stages.</li>
+        <li><strong>Add a fourth customer file</strong> (e.g. <code>04_Customer_D_Maritime_Requirements.md</code>) using the same <code>D-REQ-001</code> ID format — re-run, watch new SRD and SSS items appear automatically.</li>
+        <li><strong>Introduce a conflict</strong> between two customers (different SLAs, retention windows, throughput numbers) — watch <code>conflict_notes</code> get populated in <code>stage3_sss.json</code>.</li>
+        <li><strong>Break traceability intentionally</strong> — drop a requirement ID — watch the validator catch the dangling reference and the score drop.</li>
+      </ol>
+    </section>
+
+    <!-- Slide 12: Production swap -->
+    <section class="slide">
+      <div class="footer-tag">Going to production</div>
+      <h2>Swapping in a real local LLM</h2>
+      <p>The demo runs in deterministic <strong>mock</strong> mode. To use a real on-prem LLM (NVIDIA NIM, vLLM, TensorRT-LLM, Llama / Mistral wrapper):</p>
+      <ol>
+        <li>In <code>config.json</code>, set <code>"mode": "local"</code> and point <code>llm.endpoint</code> at your inference service.</li>
+        <li>Implement <code>LocalLLMClient.generate_json()</code> in <code>src/llm_client.py</code> — POST prompt + payload to your endpoint, parse JSON, return.</li>
+        <li>Keep <strong>schemas.py</strong>, <strong>validators.py</strong>, <strong>scoring.py</strong>, and <strong>pipeline.py</strong> untouched.</li>
+        <li>Re-run the same command. The runner picks up the new client automatically.</li>
+      </ol>
+      <p style="margin-top:0.6em; font-size:0.95rem; color:#a8b6cc;">Validation runs downstream of generation, so a misbehaving model is caught before scoring — bad output → low score → CI gate fails.</p>
+    </section>
+
+    <!-- Slide 13: Troubleshooting -->
+    <section class="slide">
+      <div class="footer-tag">Troubleshooting</div>
+      <h2>Common issues &amp; fixes</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3>"python is not recognized"</h3>
+          <p>Python isn't on your PATH. Reinstall from <code>python.org</code> and tick "Add Python to PATH".</p>
+        </div>
+        <div class="card">
+          <h3>"pip install" fails behind a corporate proxy</h3>
+          <p>Configure pip with your proxy: <code>pip --proxy=http://proxy:8080 install -r requirements.txt</code>, or use a pre-cached wheel.</p>
+        </div>
+        <div class="card">
+          <h3>PowerShell blocks .venv activation</h3>
+          <p>You don't need to activate on Windows — invoke directly: <code>.\.venv\Scripts\python.exe …</code></p>
+        </div>
+        <div class="card">
+          <h3>"Permission denied" on Linux/macOS</h3>
+          <p>Make sure you're in the harness folder and the venv is activated. Try <code>chmod +x</code> if needed.</p>
+        </div>
+        <div class="card">
+          <h3>Score below 80</h3>
+          <p>Open <code>validation_report.json</code> — every error tells you exactly which artifact and which field failed.</p>
+        </div>
+        <div class="card">
+          <h3>Want fresh outputs</h3>
+          <p>Delete the <code>outputs/</code> folder. The next run regenerates all 8 files deterministically.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 14: Recap -->
+    <section class="slide">
+      <div class="footer-tag">TL;DR</div>
+      <h2>The whole demo in 4 commands</h2>
+
+      <h3>Windows</h3>
+<pre><span class="prompt">PS&gt;</span> cd satcom_requirements_agent_harness
+<span class="prompt">PS&gt;</span> python -m venv .venv
+<span class="prompt">PS&gt;</span> .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+<span class="prompt">PS&gt;</span> .\.venv\Scripts\python.exe src\main.py --config config.json</pre>
+
+      <h3>Linux / macOS</h3>
+<pre><span class="prompt">$</span> cd satcom_requirements_agent_harness
+<span class="prompt">$</span> python3 -m venv .venv && source .venv/bin/activate
+<span class="prompt">$</span> pip install -r requirements.txt
+<span class="prompt">$</span> python src/main.py --config config.json</pre>
+
+      <p style="margin-top:0.6em;"><strong>Expected:</strong> 100 / 100 score, 0 errors, 0 warnings, 1 conflict surfaced.</p>
+    </section>
+
+    <!-- Slide 15: Closing / Help -->
+    <section class="slide">
+      <div class="footer-tag">Need a hand?</div>
+      <h1>You're all set.</h1>
+      <p class="lead" style="margin-top:0.8em;">For deployment guidance, customizations, or production integration with <strong>Polarion</strong> or <strong>Azure DevOps</strong>, contact us.</p>
+      <div style="margin-top:1.6em;">
+        <span class="badge green">Air-Gapped</span>
+        <span class="badge">Deterministic</span>
+        <span class="badge purple">Schema-Validated</span>
+        <span class="badge amber">Production-Ready Path</span>
+      </div>
+      <p style="margin-top:1.6em;">
+        <a href="https://eswlab.com/contact-us/" target="_blank" rel="noopener noreferrer" style="color:#7ec5ff; text-decoration:none; font-weight:600; font-size:1.2rem; border-bottom:1px solid rgba(126,197,255,0.4);">
+          eswlab.com/contact-us →
+        </a>
+      </p>
+      <p style="margin-top:1.5em; font-size:0.9rem; color:rgba(255,255,255,0.5);">Project AURORA-SATCOM • SATCOM Requirements Transformation Agent</p>
+    </section>
+
+  </div>
+
+  <button class="nav prev" id="prev" aria-label="Previous slide">‹</button>
+  <button class="nav next" id="next" aria-label="Next slide">›</button>
+  <div class="progress"><div class="progress-fill" id="progress"></div></div>
+  <div class="counter" id="counter">1 / 16</div>
+  <div class="swipe-hint" id="hint">← Swipe to navigate →</div>
+  <div class="esl-footer">
+    <img src="esl_logo.png" alt="ESL — Engineering Software Lab" />
+    <span>Prepared by <a href="https://eswlab.com/contact-us/" target="_blank" rel="noopener noreferrer">Engineering Software Lab</a></span>
+  </div>
+</div>
+
+<script>
+(function(){
+  const track = document.getElementById('track');
+  const prev = document.getElementById('prev');
+  const next = document.getElementById('next');
+  const progress = document.getElementById('progress');
+  const counter = document.getElementById('counter');
+  const hint = document.getElementById('hint');
+  const total = document.querySelectorAll('.slide').length;
+  let idx = 0;
+
+  function update() {
+    track.style.transform = `translateX(-${idx * 100}vw)`;
+    progress.style.width = `${((idx + 1) / total) * 100}%`;
+    counter.textContent = `${idx + 1} / ${total}`;
+    prev.classList.toggle('hidden', idx === 0);
+    next.classList.toggle('hidden', idx === total - 1);
+  }
+  function go(n){
+    idx = Math.max(0, Math.min(total - 1, n));
+    update();
+    if(hint && !hint.classList.contains('gone')) hint.classList.add('gone');
+  }
+
+  prev.addEventListener('click', () => go(idx - 1));
+  next.addEventListener('click', () => go(idx + 1));
+
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'ArrowRight' || e.key === ' '){ e.preventDefault(); go(idx + 1); }
+    else if(e.key === 'ArrowLeft'){ e.preventDefault(); go(idx - 1); }
+    else if(e.key === 'Home'){ go(0); }
+    else if(e.key === 'End'){ go(total - 1); }
+  });
+
+  let tStartX = 0, tEndX = 0;
+  document.addEventListener('touchstart', (e) => { tStartX = e.changedTouches[0].screenX; }, {passive:true});
+  document.addEventListener('touchend', (e) => {
+    tEndX = e.changedTouches[0].screenX;
+    const d = tEndX - tStartX;
+    if(Math.abs(d) > 50){ d < 0 ? go(idx + 1) : go(idx - 1); }
+  }, {passive:true});
+
+  let mDown = false, mStart = 0;
+  document.addEventListener('mousedown', (e) => { mDown = true; mStart = e.screenX; });
+  document.addEventListener('mouseup', (e) => {
+    if(!mDown) return;
+    mDown = false;
+    const d = e.screenX - mStart;
+    if(Math.abs(d) > 50){ d < 0 ? go(idx + 1) : go(idx - 1); }
+  });
+
+  update();
+})();
+</script>
+</body>
+</html>

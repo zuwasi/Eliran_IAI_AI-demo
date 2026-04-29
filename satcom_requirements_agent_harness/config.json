@@ -1,0 +1,31 @@
+{
+  "project_name": "AURORA-SATCOM",
+  "mode": "mock",
+  "input_customer_requirements_dir": "input/customer_requirements",
+  "input_context_dir": "input/context",
+  "output_dir": "outputs",
+  "llm": {
+    "provider": "local",
+    "endpoint": "http://localhost:8000/v1/chat/completions",
+    "model": "approved-local-model",
+    "temperature": 0,
+    "top_p": 1,
+    "timeout_seconds": 120
+  },
+  "approved_model_policy": {
+    "disallowed_origins": [
+      "China"
+    ],
+    "disallowed_model_families": [
+      "Qwen",
+      "DeepSeek",
+      "Baichuan",
+      "Yi",
+      "InternLM",
+      "GLM",
+      "Zhipu",
+      "Moonshot",
+      "Kimi"
+    ]
+  }
+}
