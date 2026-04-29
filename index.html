@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AURORA-SATCOM Requirements Agent — Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    min-height: 100%;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, #0a0e1a 0%, #0f1626 50%, #131c33 100%);
+    color: #e8ecf4;
+  }
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(28px, 5vw, 80px);
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: "";
+    position: absolute;
+    top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(80,180,255,0.18) 0%, rgba(80,180,255,0) 70%);
+    pointer-events: none;
+  }
+  body::after {
+    content: "";
+    position: absolute;
+    bottom: -250px; left: -250px;
+    width: 700px; height: 700px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(120,90,255,0.15) 0%, rgba(120,90,255,0) 70%);
+    pointer-events: none;
+  }
+  .wrap {
+    max-width: 980px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+  }
+  h1 {
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.4em;
+    background: linear-gradient(135deg, #fff 0%, #7ec5ff 60%, #b794ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  p.lead {
+    font-size: clamp(1.1rem, 1.5vw, 1.35rem);
+    color: #a8b6cc;
+    margin-bottom: 2.5em;
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+  }
+  .cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(16px, 2vw, 28px);
+    margin-bottom: 2em;
+  }
+  @media (max-width: 760px) {
+    .cards { grid-template-columns: 1fr; }
+  }
+  .card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(126,197,255,0.22);
+    border-radius: 16px;
+    padding: clamp(22px, 2.4vw, 36px);
+    text-align: left;
+    transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+    text-decoration: none;
+    color: inherit;
+    backdrop-filter: blur(8px);
+    display: flex;
+    flex-direction: column;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(126,197,255,0.55);
+    box-shadow: 0 12px 40px rgba(80,180,255,0.18);
+  }
+  .card .tag {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #7ec5ff;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 0.6em;
+  }
+  .card h2 {
+    font-size: clamp(1.3rem, 2vw, 1.7rem);
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.4em;
+    letter-spacing: -0.01em;
+  }
+  .card p {
+    color: #c8d2e3;
+    font-size: clamp(0.95rem, 1.1vw, 1.05rem);
+    line-height: 1.55;
+    margin-bottom: 1em;
+  }
+  .card .arrow {
+    margin-top: auto;
+    color: #7ec5ff;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+  }
+  .links {
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-bottom: 1.8em;
+    font-size: 0.95rem;
+  }
+  .links a {
+    color: #7ec5ff;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(126,197,255,0.4);
+    padding-bottom: 1px;
+    transition: color 200ms ease, border-color 200ms ease;
+  }
+  .links a:hover {
+    color: #b794ff;
+    border-bottom-color: rgba(183,148,255,0.7);
+  }
+  footer {
+    margin-top: 2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.7);
+  }
+  footer img {
+    height: 56px;
+    width: auto;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+  }
+  footer a {
+    color: #7ec5ff;
+    text-decoration: none;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(126,197,255,0.4);
+  }
+  footer a:hover { color: #b794ff; border-bottom-color: rgba(183,148,255,0.7); }
+  .badges { margin-bottom: 1.8em; }
+  .badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.78em;
+    font-weight: 600;
+    background: rgba(126,197,255,0.15);
+    border: 1px solid rgba(126,197,255,0.4);
+    color: #7ec5ff;
+    margin: 0 4px 6px;
+  }
+  .badge.green  { background: rgba(78,220,130,0.13); border-color: rgba(78,220,130,0.45); color: #6fe6a3; }
+  .badge.purple { background: rgba(170,130,255,0.15); border-color: rgba(170,130,255,0.45); color: #c5a8ff; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>AURORA-SATCOM<br/>Requirements Agent</h1>
+  <p class="lead">A 5-stage, air-gapped pipeline that turns raw customer requirements into engineered specifications, features, and dev-ready backlog items — with full traceability and conflict detection.</p>
+
+  <div class="badges">
+    <span class="badge green">Air-Gapped</span>
+    <span class="badge">Deterministic</span>
+    <span class="badge purple">Schema-Validated</span>
+  </div>
+
+  <div class="cards">
+    <a class="card" href="how_to_run_the_demo.html">
+      <div class="tag">For the customer</div>
+      <h2>How to run the demo →</h2>
+      <p>16-slide hands-on guide. Prerequisites, exact commands for Windows / macOS / Linux, expected output, troubleshooting tips, and a TL;DR.</p>
+      <span class="arrow">Open presentation →</span>
+    </a>
+
+    <a class="card" href="satcom_requirements_presentation.html">
+      <div class="tag">Technical overview</div>
+      <h2>Architecture &amp; results →</h2>
+      <p>17-slide technical deck. The 5-stage pipeline, validation, scoring, the live 100/100 result, and the production LLM swap path.</p>
+      <span class="arrow">Open presentation →</span>
+    </a>
+  </div>
+
+  <div class="links">
+    <a href="https://github.com/zuwasi/Eliran_IAI_AI-demo" target="_blank" rel="noopener noreferrer">View source on GitHub</a>
+    <a href="README.md" target="_blank">README</a>
+    <a href="STEP_BY_STEP_GUIDE.md" target="_blank">Step-by-step guide</a>
+  </div>
+
+  <footer>
+    <img src="esl_logo.png" alt="ESL — Engineering Software Lab" />
+    <span>Prepared by <a href="https://eswlab.com/contact-us/" target="_blank" rel="noopener noreferrer">Engineering Software Lab</a></span>
+  </footer>
+</div>
+</body>
+</html>

@@ -6,6 +6,16 @@ A working demo of an air-gapped, deterministic 5-stage pipeline that turns raw c
 
 ---
 
+## 🌐 Live presentations (no install needed)
+
+View the customer-facing decks directly in your browser:
+
+- **Landing page:** https://zuwasi.github.io/Eliran_IAI_AI-demo/
+- **How to run the demo (15-slide guide):** https://zuwasi.github.io/Eliran_IAI_AI-demo/how_to_run_the_demo.html
+- **Technical overview (17-slide deck):** https://zuwasi.github.io/Eliran_IAI_AI-demo/satcom_requirements_presentation.html
+
+---
+
 ## What you get
 
 ```
