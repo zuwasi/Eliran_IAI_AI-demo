@@ -13,6 +13,7 @@ View the customer-facing decks directly in your browser:
 - **Landing page:** https://zuwasi.github.io/Eliran_IAI_AI-demo/
 - **How to run the demo (15-slide guide):** https://zuwasi.github.io/Eliran_IAI_AI-demo/how_to_run_the_demo.html
 - **Technical overview (17-slide deck):** https://zuwasi.github.io/Eliran_IAI_AI-demo/satcom_requirements_presentation.html
+- **Workflow diagram (draw.io):** [satcom_requirements_workflow.drawio](satcom_requirements_workflow.drawio) — open in [app.diagrams.net](https://app.diagrams.net/) or any draw.io / diagrams.net client
 
 ---
 

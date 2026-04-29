@@ -1,0 +1,195 @@
+<mxfile host="app.diagrams.net" modified="2026-04-29T05:00:00.000Z" agent="ESL" version="22.0.0" type="device">
+  <diagram name="SATCOM Requirements Workflow" id="satcom-workflow">
+    <mxGraphModel dx="1422" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="2000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ===== TITLE ===== -->
+        <mxCell id="title" value="AURORA-SATCOM Requirements Transformation Pipeline" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=22;fontStyle=1;fontColor=#0F1626;" vertex="1" parent="1">
+          <mxGeometry x="250" y="20" width="900" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" value="Air-gapped • Deterministic • Schema-validated • Fully traceable" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontColor=#5A6A85;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="250" y="58" width="900" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- ===== INPUTS — Customer requirement sources ===== -->
+        <mxCell id="input-label" value="INPUT — Raw Customer Requirements (.md)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontColor=#7280A0;" vertex="1" parent="1">
+          <mxGeometry x="250" y="100" width="900" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cust-a" value="&lt;b&gt;Customer A — Defense&lt;/b&gt;&#10;Encryption • Signed updates&#10;7-year audit logs • RBAC" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F3A66;strokeColor=#7EC5FF;strokeWidth=2;fontColor=#FFFFFF;fontSize=12;align=center;verticalAlign=middle;arcSize=20;" vertex="1" parent="1">
+          <mxGeometry x="280" y="130" width="260" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cust-b" value="&lt;b&gt;Customer B — Commercial Telecom&lt;/b&gt;&#10;Bandwidth tiers • Billing&#10;SLA reports • 24-mo retention" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F3A66;strokeColor=#7EC5FF;strokeWidth=2;fontColor=#FFFFFF;fontSize=12;align=center;verticalAlign=middle;arcSize=20;" vertex="1" parent="1">
+          <mxGeometry x="570" y="130" width="260" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cust-c" value="&lt;b&gt;Customer C — Emergency Response&lt;/b&gt;&#10;Rapid deploy • Simple dashboards&#10;Priority traffic • First responders" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F3A66;strokeColor=#7EC5FF;strokeWidth=2;fontColor=#FFFFFF;fontSize=12;align=center;verticalAlign=middle;arcSize=20;" vertex="1" parent="1">
+          <mxGeometry x="860" y="130" width="260" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- ===== STAGE 1 — INGESTION ===== -->
+        <mxCell id="stage1" value="&lt;b&gt;STAGE 1 — Ingestion&lt;/b&gt;&#10;&#10;Deterministic regex extraction&#10;src/utils.py · extract_requirement_blocks()&#10;&#10;Output: stage1_ingested_requirements.json" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F2440;strokeColor=#6FE6A3;strokeWidth=3;fontColor=#FFFFFF;fontSize=12;align=center;verticalAlign=middle;arcSize=15;" vertex="1" parent="1">
+          <mxGeometry x="500" y="270" width="400" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="stage1-tag" value="NO LLM&#10;DETERMINISTIC" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6FE6A3;strokeColor=#6FE6A3;fontColor=#0A0E1A;fontSize=10;fontStyle=1;align=center;verticalAlign=middle;arcSize=30;" vertex="1" parent="1">
+          <mxGeometry x="920" y="295" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- ===== STAGE 2 — SRD ===== -->
+        <mxCell id="stage2" value="&lt;b&gt;STAGE 2 — SRD Generation&lt;/b&gt;&#10;&#10;System Requirements Document (engineering &quot;shall&quot;)&#10;Subsystem assignment · LLM-assisted&#10;&#10;Output: stage2_srd.json" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F2440;strokeColor=#7EC5FF;strokeWidth=3;fontColor=#FFFFFF;fontSize=12;align=center;verticalAlign=middle;arcSize=15;" vertex="1" parent="1">
+          <mxGeometry x="500" y="430" width="400" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="stage2-tag" value="LLM" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7EC5FF;strokeColor=#7EC5FF;fontColor=#0A0E1A;fontSize=11;fontStyle=1;align=center;verticalAlign=middle;arcSize=30;" vertex="1" parent="1">
+          <mxGeometry x="920" y="465" width="100" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ===== STAGE 3 — SSS (the hero stage) ===== -->
+        <mxCell id="stage3" value="&lt;b&gt;STAGE 3 — SSS Generation (HERO STAGE)&lt;/b&gt;&#10;&#10;Unified System / Subsystem Specification&#10;• Merge related SRDs across customers&#10;• Detect conflicts (e.g. retention 7y vs 24mo)&#10;• Mandatory dual traceability:&#10;   source_srd_ids  AND  source_customer_ids&#10;&#10;Output: stage3_sss.json" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2A1A4A;strokeColor=#B794FF;strokeWidth=4;fontColor=#FFFFFF;fontSize=12;align=center;verticalAlign=middle;arcSize=15;" vertex="1" parent="1">
+          <mxGeometry x="450" y="590" width="500" height="160" as="geometry" />
+        </mxCell>
+
+        <mxCell id="stage3-tag" value="LLM&#10;+ CONFLICT&#10;DETECTION" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#B794FF;strokeColor=#B794FF;fontColor=#0A0E1A;fontSize=10;fontStyle=1;align=center;verticalAlign=middle;arcSize=30;" vertex="1" parent="1">
+          <mxGeometry x="970" y="635" width="110" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="stage3-conflict" value="⚠ Example conflict caught:&#10;A-REQ-013 (7-yr ops logs)&#10;vs&#10;B-REQ-009 (24-mo billing)&#10;→ SSS-DATA-001 conflict_notes" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#3A1F1F;strokeColor=#FFB347;strokeWidth=2;fontColor=#FFD07A;fontSize=10;align=center;verticalAlign=middle;arcSize=20;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="120" y="610" width="280" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- ===== STAGE 4 — FEATURES ===== -->
+        <mxCell id="stage4" value="&lt;b&gt;STAGE 4 — Features&lt;/b&gt;&#10;&#10;Group SSS by subsystem prefix → PM-level capabilities&#10;e.g. SSS-SEC-* → &quot;Secure Communications &amp; Key Mgmt&quot;&#10;&#10;Output: stage4_features.json" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F2440;strokeColor=#7EC5FF;strokeWidth=3;fontColor=#FFFFFF;fontSize=12;align=center;verticalAlign=middle;arcSize=15;" vertex="1" parent="1">
+          <mxGeometry x="500" y="800" width="400" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="stage4-tag" value="LLM" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7EC5FF;strokeColor=#7EC5FF;fontColor=#0A0E1A;fontSize=11;fontStyle=1;align=center;verticalAlign=middle;arcSize=30;" vertex="1" parent="1">
+          <mxGeometry x="920" y="835" width="100" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ===== STAGE 5 — PBIs ===== -->
+        <mxCell id="stage5" value="&lt;b&gt;STAGE 5 — PBIs&lt;/b&gt;&#10;&#10;Product Backlog Items with Given / When / Then ACs&#10;Dev-ready user stories · Linked back to SSS&#10;&#10;Output: stage5_pbis.json" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F2440;strokeColor=#7EC5FF;strokeWidth=3;fontColor=#FFFFFF;fontSize=12;align=center;verticalAlign=middle;arcSize=15;" vertex="1" parent="1">
+          <mxGeometry x="500" y="960" width="400" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="stage5-tag" value="LLM" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7EC5FF;strokeColor=#7EC5FF;fontColor=#0A0E1A;fontSize=11;fontStyle=1;align=center;verticalAlign=middle;arcSize=30;" vertex="1" parent="1">
+          <mxGeometry x="920" y="995" width="100" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ===== VALIDATION ===== -->
+        <mxCell id="validation" value="&lt;b&gt;VALIDATION&lt;/b&gt;&#10;&#10;src/validators.py + schemas.py&#10;• JSON-schema strict conformance&#10;• Every traceability link resolves&#10;• Every SSS has both source_srd_ids and source_customer_ids&#10;• Every PBI AC contains Given / When / Then&#10;• Duplicate-text warnings&#10;&#10;Output: validation_report.json" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1A2F1A;strokeColor=#6FE6A3;strokeWidth=3;fontColor=#FFFFFF;fontSize=12;align=center;verticalAlign=middle;arcSize=15;" vertex="1" parent="1">
+          <mxGeometry x="450" y="1120" width="500" height="170" as="geometry" />
+        </mxCell>
+
+        <!-- ===== SCORING ===== -->
+        <mxCell id="scoring" value="&lt;b&gt;SCORING&lt;/b&gt;     src/scoring.py&#10;&#10;Weighted across 6 categories:&#10;• Traceability accuracy (25%)   • Deduplication quality (20%)&#10;• Conflict detection (15%)         • Feature quality (15%)&#10;• PBI quality (15%)                    • JSON validity (10%)&#10;&#10;Pass condition: validated AND final_score ≥ 80&#10;Output: score_report.json" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1A2F1A;strokeColor=#6FE6A3;strokeWidth=3;fontColor=#FFFFFF;fontSize=12;align=center;verticalAlign=middle;arcSize=15;" vertex="1" parent="1">
+          <mxGeometry x="450" y="1340" width="500" height="170" as="geometry" />
+        </mxCell>
+
+        <!-- ===== FINAL OUTPUTS ===== -->
+        <mxCell id="output-label" value="OUTPUTS — All artifacts in outputs/" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontColor=#7280A0;" vertex="1" parent="1">
+          <mxGeometry x="250" y="1560" width="900" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="out-pipeline" value="&lt;b&gt;Pipeline artifacts (5)&lt;/b&gt;&#10;stage1_ingested_requirements.json&#10;stage2_srd.json&#10;stage3_sss.json&#10;stage4_features.json&#10;stage5_pbis.json" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7EC5FF;strokeWidth=2;fontColor=#0F1626;fontSize=11;align=left;verticalAlign=top;arcSize=15;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="280" y="1590" width="300" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="out-reports" value="&lt;b&gt;Reports (3)&lt;/b&gt;&#10;validation_report.json   (errors / warnings)&#10;score_report.json           (final score, passed)&#10;run_log.json                  (per-stage timing)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#6FE6A3;strokeWidth=2;fontColor=#0F1626;fontSize=11;align=left;verticalAlign=top;arcSize=15;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="610" y="1590" width="300" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="out-score" value="&lt;b&gt;Live Result&lt;/b&gt;&#10;&#10;final_score: &lt;font color=&quot;#2DA85A&quot;&gt;&lt;b&gt;100 / 100&lt;/b&gt;&lt;/font&gt;&#10;passed: &lt;font color=&quot;#2DA85A&quot;&gt;&lt;b&gt;true&lt;/b&gt;&lt;/font&gt;&#10;&#10;0 errors · 0 warnings&#10;1 conflict surfaced" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F8EE;strokeColor=#6FE6A3;strokeWidth=3;fontColor=#0F1626;fontSize=12;align=center;verticalAlign=middle;arcSize=15;" vertex="1" parent="1">
+          <mxGeometry x="940" y="1590" width="220" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- ===== LLM CLIENT — Side panel ===== -->
+        <mxCell id="llm-panel" value="&lt;b&gt;LLM Client&lt;/b&gt;     src/llm_client.py&#10;&#10;config.mode = &quot;mock&quot;   →   MockLLMClient&#10;                                                  (deterministic, offline)&#10;&#10;config.mode = &quot;local&quot;   →   LocalLLMClient&#10;                                                  (NVIDIA NIM / vLLM /&#10;                                                   TensorRT-LLM /&#10;                                                   Llama / Mistral)&#10;&#10;Approved-model policy enforced:&#10;disallowed origins: China&#10;disallowed families: Qwen, DeepSeek, GLM,&#10;Yi, Moonshot, Kimi, Baichuan, InternLM, Zhipu" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E0;strokeColor=#FFB347;strokeWidth=2;fontColor=#0F1626;fontSize=11;align=left;verticalAlign=top;arcSize=15;spacing=12;dashed=0;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="430" width="290" height="320" as="geometry" />
+        </mxCell>
+
+        <!-- ===== CONTEXT — Side panel ===== -->
+        <mxCell id="context-panel" value="&lt;b&gt;System Context&lt;/b&gt;&#10;input/context/&#10;&#10;Subsystem catalog included&#10;in every LLM prompt:&#10;&#10;• Security &amp; Cryptography&#10;• Network Management&#10;• Ground Gateway&#10;• User Terminal&#10;• Data Analytics&#10;• Mission Planning&#10;• TT&amp;C Interface" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0F4FA;strokeColor=#7280A0;strokeWidth=2;fontColor=#0F1626;fontSize=11;align=left;verticalAlign=top;arcSize=15;spacing=10;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="270" width="220" height="270" as="geometry" />
+        </mxCell>
+
+        <!-- ===== CONFIG — Side panel ===== -->
+        <mxCell id="config-panel" value="&lt;b&gt;config.json&lt;/b&gt;&#10;&#10;mode: mock | local&#10;input directories&#10;output directory&#10;LLM endpoint &amp; model&#10;approved-model policy" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0F4FA;strokeColor=#7280A0;strokeWidth=2;fontColor=#0F1626;fontSize=11;align=left;verticalAlign=top;arcSize=15;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="20" y="100" width="220" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- ===== ARROWS — Customer requirements → Stage 1 ===== -->
+        <mxCell id="e-a-s1" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;strokeColor=#7EC5FF;strokeWidth=2;" edge="1" parent="1" source="cust-a" target="stage1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-b-s1" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#7EC5FF;strokeWidth=2;" edge="1" parent="1" source="cust-b" target="stage1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-c-s1" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;strokeColor=#7EC5FF;strokeWidth=2;" edge="1" parent="1" source="cust-c" target="stage1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ===== ARROWS — Stages chain ===== -->
+        <mxCell id="e-s1-s2" value="14 ingested" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#6FE6A3;strokeWidth=3;fontSize=11;fontColor=#0F1626;fontStyle=1;" edge="1" parent="1" source="stage1" target="stage2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-s2-s3" value="14 SRDs" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#6FE6A3;strokeWidth=3;fontSize=11;fontColor=#0F1626;fontStyle=1;" edge="1" parent="1" source="stage2" target="stage3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-s3-s4" value="9 unified SSS" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#6FE6A3;strokeWidth=3;fontSize=11;fontColor=#0F1626;fontStyle=1;" edge="1" parent="1" source="stage3" target="stage4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-s4-s5" value="6 features" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#6FE6A3;strokeWidth=3;fontSize=11;fontColor=#0F1626;fontStyle=1;" edge="1" parent="1" source="stage4" target="stage5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-s5-val" value="12 PBIs" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#6FE6A3;strokeWidth=3;fontSize=11;fontColor=#0F1626;fontStyle=1;" edge="1" parent="1" source="stage5" target="validation">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-val-score" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#6FE6A3;strokeWidth=3;" edge="1" parent="1" source="validation" target="scoring">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ===== ARROWS — Scoring → Outputs ===== -->
+        <mxCell id="e-score-out1" style="endArrow=classic;html=1;rounded=0;exitX=0.3;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#7EC5FF;strokeWidth=2;" edge="1" parent="1" source="scoring" target="out-pipeline">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-score-out2" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#6FE6A3;strokeWidth=2;" edge="1" parent="1" source="scoring" target="out-reports">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-score-out3" style="endArrow=classic;html=1;rounded=0;exitX=0.7;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#6FE6A3;strokeWidth=3;" edge="1" parent="1" source="scoring" target="out-score">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ===== ARROWS — LLM client to stages 2/3/4/5 ===== -->
+        <mxCell id="e-llm-s2" value="generate_json()" style="endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.2;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#FFB347;strokeWidth=2;dashed=1;fontSize=10;fontColor=#7280A0;fontStyle=2;" edge="1" parent="1" source="llm-panel" target="stage2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-llm-s3" style="endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.3;entryDx=0;entryDy=0;strokeColor=#FFB347;strokeWidth=2;dashed=1;" edge="1" parent="1" source="llm-panel" target="stage3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-llm-s4" style="endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.85;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#FFB347;strokeWidth=2;dashed=1;" edge="1" parent="1" source="llm-panel" target="stage4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ===== ARROW — Context to stages ===== -->
+        <mxCell id="e-ctx-s2" value="context" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#7280A0;strokeWidth=1;dashed=1;fontSize=10;fontColor=#7280A0;fontStyle=2;" edge="1" parent="1" source="context-panel" target="stage2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ===== ARROW — Conflict callout to stage 3 ===== -->
+        <mxCell id="e-conf-s3" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#FFB347;strokeWidth=2;dashed=1;startArrow=classic;startFill=1;" edge="1" parent="1" source="stage3-conflict" target="stage3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ===== Footer ===== -->
+        <mxCell id="footer" value="Prepared by Engineering Software Lab    •    https://eswlab.com/contact-us/" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#7280A0;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="250" y="1740" width="900" height="20" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
